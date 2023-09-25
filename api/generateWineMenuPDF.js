@@ -15,7 +15,6 @@ const octokit = new Octokit({
 });
 
 module.exports = async (req, res) => {
-    console.log("Function triggered!");
     try {
         const recordID = req.body.recordID;
 
@@ -90,6 +89,6 @@ module.exports = async (req, res) => {
         console.error('Error Message:', error.message);
         console.error('Error Stack:', error.stack);
         res.status(500).send('Server Error');
-   }
-   
-};
+    }
+}
+
