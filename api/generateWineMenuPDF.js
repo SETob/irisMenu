@@ -20,8 +20,8 @@ module.exports = async (req, res) => {
 
         console.log(`Generating PDF for recordID: ${recordID}`);
 
-        const path = require('path');
-        const htmlPath = path.resolve(__dirname, '..', 'template.html');
+        const templatePath = require('path');
+        const htmlPath = templatePath.resolve(__dirname, '..', 'template.html');
         const html = fs.readFileSync(htmlPath, 'utf8');
         const template = Handlebars.compile(html);
         const processedHTML = template(req.body || {});
