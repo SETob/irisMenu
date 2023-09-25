@@ -20,15 +20,9 @@ module.exports = async (req, res) => {
         const template = Handlebars.compile(html);
         const processedHTML = template(req.body || {});
 
-        let browser;
-        // Connect to Browserless.io
-        if (process.env.NODE_ENV === "production") {
-            browser = await puppeteer.connect({
-                browserWSEndpoint: `wss://chrome.browserless.io?token=${process.env.BROWSERLESS_TOKEN}`
-            });
-        } else {
-            browser = await puppeteer.launch();
-        }
+        const browser = await puppeteer.connect({
+            browserWSEndpoint: `wss://chrome.browserless.io?token=${process.env.BROWSERLESS_TOKEN}`
+        });
 
         const page = await browser.newPage();
         await page.setContent(processedHTML);
@@ -56,17 +50,13 @@ module.exports = async (req, res) => {
             message: 'PDF added',
             content: pdf.toString('base64'),
         });
-        
-console.log("GitHub Response:", JSON.stringify(data, null, 2));
+
+        console.log("GitHub Response:", JSON.stringify(data, null, 2));
 
         console.log("PDF uploaded to GitHub.");
         const airtableEndpoint = `${process.env.AIRTABLE_API_URL}/${recordID}`;
         const fileURL = data.content.download_url;
         const filename = `wineMenu_${Date.now()}.pdf`;
-
-        console.log(airtableEndpoint);
-        console.log(filename);
-        console.log(fileURL);
 
         const patchData = {
             fields: {
@@ -81,7 +71,7 @@ console.log("GitHub Response:", JSON.stringify(data, null, 2));
 
         console.log("Sending to AT:", JSON.stringify(patchData, null, 2));
 
-        const airtableResponse = await axios.patch(airtableEndpoint,  patchData, {
+        const airtableResponse = await axios.patch(airtableEndpoint, patchData, {
             headers: {
                 'Authorization': `Bearer ${process.env.AIRTABLE_API_KEY}`,
                 'Content-Type': 'application/json',
@@ -108,4 +98,3 @@ console.log("GitHub Response:", JSON.stringify(data, null, 2));
         res.status(500).send('Server Error');
     }
 }
-
