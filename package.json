@@ -1,0 +1,19 @@
+{
+  "name": "pdf-to-airtable",
+  "version": "1.0.0",
+  "description": "Generate PDFs and send them to Airtable via GitHub",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "axios": "^0.24.0",
+    "fs": "^0.0.1-security",
+    "@octokit/rest": "^18.11.0",
+    "@octokit/auth-app": "^3.6.0"
+  },
+  "engines": {
+    "node": "14.x"
+  }
+}
