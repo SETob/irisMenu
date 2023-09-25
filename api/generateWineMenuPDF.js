@@ -87,7 +87,9 @@ module.exports = async (req, res) => {
             res.status(400).send('Failed to upload PDF to Airtable');
         }
     } catch (error) {
-        console.error('Error:', error);
-        res.status(500).send(`Server Error: ${error.message}`);
-    }
+        console.error('Error Message:', error.message);
+        console.error('Error Stack:', error.stack);
+        res.status(500).send('Server Error');
+   }
+   
 };
