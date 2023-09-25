@@ -6,13 +6,12 @@ const puppeteer = require('puppeteer');
 const chrome = require('chrome-aws-lambda');
 const Handlebars = require('handlebars');
 
+
 const octokit = new Octokit({
-  authStrategy: createAppAuth,
-  auth: {
-    type: 'token',
-    token: process.env.GITHUB_TOKEN
-  },
+    auth: process.env.GITHUB_TOKEN
 });
+
+  
 
 module.exports = async (req, res) => {
     try {
@@ -26,12 +25,17 @@ module.exports = async (req, res) => {
         const template = Handlebars.compile(html);
         const processedHTML = template(req.body || {});
 
-        const browser = await puppeteer.launch({
-            executablePath: await chrome.executablePath,
-            args: chrome.args,
-            defaultViewport: chrome.defaultViewport,
-            headless: chrome.headless
-        });
+        let browser;
+        if (process.env.NODE_ENV === "production") {
+            browser = await puppeteer.launch({
+                executablePath: await chrome.executablePath,
+                args: chrome.args,
+                defaultViewport: chrome.defaultViewport,
+                headless: chrome.headless
+            });
+        } else {
+            browser = await puppeteer.launch();
+        }
         const page = await browser.newPage();
         await page.setContent(processedHTML);
 
@@ -58,13 +62,32 @@ module.exports = async (req, res) => {
             message: 'PDF added',
             content: pdf.toString('base64'),
         });
+        
+console.log("GitHub Response:", JSON.stringify(data, null, 2));
 
         console.log("PDF uploaded to GitHub.");
+        const airtableEndpoint = `${process.env.AIRTABLE_API_URL}/${recordID}`;
+        const fileURL = data.content.download_url;
+        const filename = `wineMenu_${Date.now()}.pdf`;
 
-        const fileURL = data.content.html_url;
-        const airtableResponse = await axios.patch(process.env.AIRTABLE_API_URL, {
-            fields: { 'PDF Attachment': [{ url: fileURL }] },
-        }, {
+        console.log(airtableEndpoint);
+        console.log(filename);
+        console.log(fileURL);
+
+        const patchData = {
+            fields: {
+                'wineMenuFile': [
+                    {
+                        "url": fileURL,
+                        "filename": filename
+                    }
+                ]
+            }
+        };
+
+        console.log("Sending to AT:", JSON.stringify(patchData, null, 2));
+
+        const airtableResponse = await axios.patch(airtableEndpoint,  patchData, {
             headers: {
                 'Authorization': `Bearer ${process.env.AIRTABLE_API_KEY}`,
                 'Content-Type': 'application/json',

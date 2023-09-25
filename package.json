@@ -7,11 +7,19 @@
     "start": "node index.js"
   },
   "dependencies": {
-    "express": "^4.17.1",
-    "axios": "^0.24.0",
-    "fs": "^0.0.1-security",
+    "@octokit/auth-app": "^3.6.0",
     "@octokit/rest": "^18.11.0",
-    "@octokit/auth-app": "^3.6.0"
+    "axios": "^0.24.0",
+    "chrome-aws-lambda": "*",
+    "express": "^4.17.1",
+    "fs": "^0.0.1-security",
+    "handlebars": "*",
+    "node-fetch": "^2.7.0",
+    "puppeteer": "^21.3.4",
+    "puppeteer-core": "*"
+  },
+  "devDependencies": {
+    "puppeteer": "latest"
   },
   "engines": {
     "node": "18.x"
