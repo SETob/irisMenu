@@ -2,7 +2,7 @@ const axios = require('axios');
 const fs = require('fs');
 const { Octokit } = require("@octokit/rest");
 const { createAppAuth } = require("@octokit/auth-app");
-const puppeteer = require('puppeteer');
+const puppeteer = require('puppeteer-core');
 const chrome = require('chrome-aws-lambda');
 const Handlebars = require('handlebars');
 
