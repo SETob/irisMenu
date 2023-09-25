@@ -1,8 +1,0 @@
-{
-    "functions": {
-      "api/generateWineMenuPDF.js": {
-        "runtime": "nodejs18.x",
-        "memory": 3008
-      }
-    }
-  }
