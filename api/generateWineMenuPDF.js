@@ -13,6 +13,8 @@ module.exports = async (req, res) => {
         const recordID = req.body.recordID;
 
         console.log(`Generating PDF for recordID: ${recordID}`);
+        console.log("Received data:", JSON.stringify(req.body));
+
 
         const templatePath = require('path');
         const htmlPath = templatePath.resolve(__dirname, '..', 'template.html');
