@@ -1,17 +1,12 @@
 const axios = require('axios');
 const fs = require('fs');
 const { Octokit } = require("@octokit/rest");
-const { createAppAuth } = require("@octokit/auth-app");
 const puppeteer = require('puppeteer-core');
-const chrome = require('chrome-aws-lambda');
 const Handlebars = require('handlebars');
-
 
 const octokit = new Octokit({
     auth: process.env.GITHUB_TOKEN
 });
-
-  
 
 module.exports = async (req, res) => {
     try {
@@ -26,16 +21,15 @@ module.exports = async (req, res) => {
         const processedHTML = template(req.body || {});
 
         let browser;
+        // Connect to Browserless.io
         if (process.env.NODE_ENV === "production") {
-            browser = await puppeteer.launch({
-                executablePath: await chrome.executablePath,
-                args: chrome.args,
-                defaultViewport: chrome.defaultViewport,
-                headless: chrome.headless
+            browser = await puppeteer.connect({
+                browserWSEndpoint: `wss://chrome.browserless.io?token=${process.env.BROWSERLESS_TOKEN}`
             });
         } else {
             browser = await puppeteer.launch();
         }
+
         const page = await browser.newPage();
         await page.setContent(processedHTML);
 
