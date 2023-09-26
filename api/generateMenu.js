@@ -29,6 +29,11 @@ module.exports = async (req, res) => {
         const page = await browser.newPage();
         await page.setContent(processedHTML);
 
+        // Set the QR code image src and ensure it's loaded
+        await page.$eval('#qrCode', (el, qrCodeURL) => el.src = qrCodeURL, req.body.qrCodeURL[0]);
+        await page.waitForSelector('#qrCode', { visible: true });
+
+        // Now, generate the PDF
         const pdfPath = `/tmp/${recordID}.pdf`;
         await page.pdf({
             path: pdfPath,
@@ -36,6 +41,7 @@ module.exports = async (req, res) => {
             landscape: true,
             margin: { top: 0, right: 0, bottom: 0, left: 0 }
         });
+
         await browser.close();
 
         const pdf = fs.readFileSync(pdfPath);
