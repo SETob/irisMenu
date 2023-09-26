@@ -17,7 +17,7 @@ module.exports = async (req, res) => {
 
 
         const templatePath = require('path');
-        const htmlPath = templatePath.resolve(__dirname, '..', 'templates', 'wineMenuTemplate.html');
+        const htmlPath = templatePath.resolve(__dirname, '..', 'templates', 'menuTemplate.html');
         const html = fs.readFileSync(htmlPath, 'utf8');
         const template = Handlebars.compile(html);
         const processedHTML = template(req.body || {});
@@ -56,13 +56,13 @@ module.exports = async (req, res) => {
         console.log("GitHub Response:", JSON.stringify(data, null, 2));
 
         console.log("PDF uploaded to GitHub.");
-        const airtableEndpoint = `${process.env.AIRTABLE_API_URL}/${recordID}`;
+        const airtableEndpoint = `https://api.airtable.com/v0/appwLqFINlFj1m52k/tbl8i6G1qTReEtT89/${recordID}`;
         const fileURL = data.content.download_url;
-        const filename = `wineMenu_${Date.now()}.pdf`;
+        const filename = `menu_${Date.now()}.pdf`;
 
         const patchData = {
             fields: {
-                'wineMenuFile': [
+                'Menu': [
                     {
                         "url": fileURL,
                         "filename": filename
