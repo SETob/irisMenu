@@ -53,7 +53,6 @@ module.exports = async (req, res) => {
             content: pdf.toString('base64'),
         });
 
-        console.log("GitHub Response:", JSON.stringify(data, null, 2));
 
         console.log("PDF uploaded to GitHub.");
         const airtableEndpoint = `https://api.airtable.com/v0/appwLqFINlFj1m52k/tbl8i6G1qTReEtT89/${recordID}`;
@@ -71,7 +70,6 @@ module.exports = async (req, res) => {
             }
         };
 
-        console.log("Sending to AT:", JSON.stringify(patchData, null, 2));
 
         const airtableResponse = await axios.patch(airtableEndpoint, patchData, {
             headers: {
