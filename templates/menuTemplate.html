@@ -115,11 +115,11 @@ body {
               <div class="text-size-tiny">{{journeyDate}}</div>
             </div>
               <div role="list" class="printed-text-block">
-                <div role="listitem" class="menu-list">
-                    {{#each impressions}}
+                {{#each impressions}}
+                <div role="listitem" class="menu-list">  
                   <div id="dish-output-18" class="printed-text_impression">{{this.impressionName}}</div>
-                  {{/each}}
                 </div>
+                {{/each}}
               </div>
             </div>
             <div class="qr-code-block">
@@ -134,11 +134,11 @@ body {
               <div class="text-size-tiny">{{journeyDate}}</div>
             </div>
               <div role="list" class="printed-text-block">
+                {{#each impressions}}
                 <div role="listitem" class="menu-list">
-                    {{#each impressions}}
                   <div id="dish-output-18" class="printed-text_impression">{{this.impressionName}}</div>
-                  {{/each}}
                 </div>
+                {{/each}}
               </div>
             </div>
             <div class="qr-code-block">
