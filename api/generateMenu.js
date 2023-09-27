@@ -29,9 +29,15 @@ module.exports = async (req, res) => {
         const page = await browser.newPage();
         await page.setContent(processedHTML);
 
-        // Set the QR code image src and ensure it's loaded
-        await page.$eval('#qrCode', (el, qrCodeURL) => el.src = qrCodeURL, req.body.qrCodeURL[0]);
-        await page.waitForSelector('#qrCode', { visible: true });
+
+        // Ensure QR Code is present in the DOM
+        await page.waitForSelector('.qrCode');
+
+        // Ensure QR Code is fully loaded
+        await page.waitForFunction(() => {
+            const qrImage = document.querySelector('.qrCode');
+            return qrImage.complete;
+        });
 
         // Now, generate the PDF
         const pdfPath = `/tmp/${recordID}.pdf`;
