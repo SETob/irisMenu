@@ -9,6 +9,7 @@
   "dependencies": {
     "@octokit/auth-app": "^3.6.0",
     "@octokit/rest": "^18.11.0",
+    "@vercel/blob": "^0.12.5",
     "axios": "^0.24.0",
     "chrome-aws-lambda": "*",
     "express": "^4.17.1",
