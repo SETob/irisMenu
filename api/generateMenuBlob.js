@@ -2,7 +2,7 @@ const axios = require('axios');
 const fs = require('fs');
 const puppeteer = require('puppeteer-core');
 const Handlebars = require('handlebars');
-const { Blob } = require('@vercel/blob'); // Add this
+const { put } = require('@vercel/blob'); // Add this
 
 module.exports = async (req, res) => {
     try {
@@ -28,33 +28,31 @@ module.exports = async (req, res) => {
 
        
         // Now, generate the PDF as a buffer
-        const pdfBuffer = await page.pdf({
+        const pdfPath = `/tmp/${recordID}.pdf`;
+        await page.pdf({
+            path: pdfPath,
             format: 'A4',
             landscape: true,
             margin: { top: 0, right: 0, bottom: 0, left: 0 }
         });
-
+    
         await browser.close();
-
-        // Convert the buffer to a readable stream
-        const readableStream = require('stream').Readable.from(pdfBuffer);
-
-        // Upload the PDF to Vercel Blob storage
-        const blob = new Blob();
-        console.log("Attempting to upload PDF to Vercel Blob.");
-
-        const result = await blob.put(`menus/${recordID}.pdf`, readableStream, {
+    
+        const pdf = fs.readFileSync(pdfPath);
+        console.log("PDF generated and read into memory.");
+    
+        // Upload to Vercel Blob
+        const pdfName = `PDFs/${recordID}.pdf`;
+        const blob = await put(pdfName, pdf, {
             access: 'public',
-            contentType: 'application/pdf',
-            addRandomSuffix: false
+            token: process.env.BLOB_READ_WRITE_TOKEN
         });
-        console.log("Successfully uploaded PDF to Vercel Blob. URL:", blobResponse.url);
-
-
-        console.log("PDF uploaded to Vercel Blob storage.");
-
+    
+        console.log("PDF uploaded to Vercel Blob.");
+    
+        // If you'd like to retain the functionality of updating Airtable with a URL, you can do so using the blob's URL
+        const fileURL = blob.url;
         const airtableEndpoint = `https://api.airtable.com/v0/appwLqFINlFj1m52k/tbl8i6G1qTReEtT89/${recordID}`;
-        const fileURL = result.url;
         const filename = `menu_${Date.now()}.pdf`;
 
         const patchData = {
@@ -68,8 +66,24 @@ module.exports = async (req, res) => {
             }
         };
 
-        // ... [rest of your code for updating Airtable] ...
+
+        const airtableResponse = await axios.patch(airtableEndpoint, patchData, {
+            headers: {
+                'Authorization': `Bearer ${process.env.AIRTABLE_API_KEY}`,
+                'Content-Type': 'application/json',
+            }
+        });
+
+    if (airtableResponse.status === 200) {
+            console.log("PDF uploaded to Airtable.");
+            res.status(200).send('PDF uploaded to Airtable');
+        } else {
+            console.error("Failed to upload PDF to Airtable.");
+            res.status(400).send('Failed to upload PDF to Airtable');
+        }
     } catch (error) {
-        // ... [your error handling logic] ...
+        console.error('Error Message:', error.message);
+        console.error('Error Stack:', error.stack);
+        res.status(500).send('Server Error');
     }
 }
