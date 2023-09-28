@@ -101,6 +101,8 @@ module.exports = async (req, res) => {
             }
         });
 
+        console.log("Airtable Response:", airtableResponse.data);
+
         if (airtableResponse.status === 200) {
             await octokit.rest.repos.deleteFile({
                 owner,
