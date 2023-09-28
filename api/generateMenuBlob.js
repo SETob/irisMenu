@@ -8,6 +8,7 @@ const qrcode = require('qrcode');
 module.exports = async (req, res) => {
     try {
         const recordID = req.body.recordID;
+        const slug = req.body.slug;
 
         console.log(`Generating PDF for recordID: ${recordID}`);
         console.log("Received data:", JSON.stringify(req.body));
