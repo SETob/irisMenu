@@ -3,6 +3,7 @@ const fs = require('fs');
 const { Octokit } = require("@octokit/rest");
 const puppeteer = require('puppeteer-core');
 const Handlebars = require('handlebars');
+const qrcode = require('qrcode');
 
 const octokit = new Octokit({
     auth: process.env.GITHUB_TOKEN
@@ -11,6 +12,7 @@ const octokit = new Octokit({
 module.exports = async (req, res) => {
     try {
         const recordID = req.body.recordID;
+        const slug = req.body.slug;
 
         console.log(`Generating PDF for recordID: ${recordID}`);
         console.log("Received data:", JSON.stringify(req.body));
@@ -20,7 +22,16 @@ module.exports = async (req, res) => {
         const htmlPath = templatePath.resolve(__dirname, '..', 'templates', 'menuTemplate.html');
         const html = fs.readFileSync(htmlPath, 'utf8');
         const template = Handlebars.compile(html);
-        const processedHTML = template(req.body || {});
+
+        const fullURL = `https://www.restaurantiris.no/journeys/${slug}`;
+
+        const qrCodeURI = await qrcode.toDataURL(fullURL, { type: 'png', size: 6});
+        const dataForTemplate = {
+            ...req.body,
+            qrCodeURL: qrCodeURI
+        };
+
+        const processedHTML = template(dataForTemplate);
 
         const browser = await puppeteer.connect({
             browserWSEndpoint: `wss://chrome.browserless.io?token=${process.env.BROWSERLESS_TOKEN}`
