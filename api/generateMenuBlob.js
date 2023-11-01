@@ -64,7 +64,7 @@ module.exports = async (req, res) => {
         // If you'd like to retain the functionality of updating Airtable with a URL, you can do so using the blob's URL
         const fileURL = blob.url;
         const airtableEndpoint = `https://api.airtable.com/v0/appwLqFINlFj1m52k/tbl8i6G1qTReEtT89/${recordID}`;
-        const filename = `menu_${Date.now()}.pdf`;
+        const filename = `menu_${slug}.pdf`;
 
         const patchData = {
             fields: {
