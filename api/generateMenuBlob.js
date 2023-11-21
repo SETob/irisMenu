@@ -33,34 +33,59 @@ module.exports = async (req, res) => {
             browserWSEndpoint: `wss://chrome.browserless.io?token=${process.env.BROWSERLESS_TOKEN}`
         });
 
-        const page = await browser.newPage();
-        await page.setContent(processedHTML);
+        // const page = await browser.newPage();
+        // await page.setContent(processedHTML);
 
 
        
-        // Now, generate the PDF as a buffer
-        const pdfPath = `/tmp/${recordID}.pdf`;
-        await page.pdf({
-            path: pdfPath,
-            format: 'A4',
-            landscape: true,
-            margin: { top: 0, right: 0, bottom: 0, left: 0 }
-        });
+        // // Now, generate the PDF as a buffer
+        // const pdfPath = `/tmp/${recordID}.pdf`;
+        // await page.pdf({
+        //     path: pdfPath,
+        //     format: 'A4',
+        //     landscape: true,
+        //     margin: { top: 0, right: 0, bottom: 0, left: 0 }
+        // });
     
-        await browser.close();
+        // await browser.close();
     
-        const pdf = fs.readFileSync(pdfPath);
-        console.log("PDF generated and read into memory.");
+        // const pdf = fs.readFileSync(pdfPath);
+        // console.log("PDF generated and read into memory.");
     
-        // Upload to Vercel Blob
-        const pdfName = `PDFs/${recordID}.pdf`;
-        const blob = await put(pdfName, pdf, {
-            access: 'public',
-            token: process.env.BLOB_READ_WRITE_TOKEN
-        });
+        // // Upload to Vercel Blob
+        // const pdfName = `PDFs/${recordID}.pdf`;
+        // const blob = await put(pdfName, pdf, {
+        //     access: 'public',
+        //     token: process.env.BLOB_READ_WRITE_TOKEN
+        // });
     
-        console.log("PDF uploaded to Vercel Blob.");
+        // console.log("PDF uploaded to Vercel Blob.");
     
+
+
+        const page = await browser.newPage();
+await page.setContent(processedHTML);
+
+// Generate the PDF as a buffer
+const pdfBuffer = await page.pdf({
+    format: 'A4',
+    landscape: true,
+    margin: { top: 0, right: 0, bottom: 0, left: 0 }
+});
+
+await browser.close();
+console.log("PDF generated and stored in memory.");
+
+// Upload the buffer to Vercel Blob
+const pdfName = `PDFs/${recordID}.pdf`;
+const blob = await put(pdfName, pdfBuffer, {
+    access: 'public',
+    token: process.env.BLOB_READ_WRITE_TOKEN
+});
+
+console.log("PDF uploaded to Vercel Blob.");
+
+
         // If you'd like to retain the functionality of updating Airtable with a URL, you can do so using the blob's URL
         const fileURL = blob.url;
         const airtableEndpoint = `https://api.airtable.com/v0/appwLqFINlFj1m52k/tbl8i6G1qTReEtT89/${recordID}`;
