@@ -32,7 +32,7 @@
             background-color: #fff;
             font-family: 'PP Writer', serif;
             font-weight: 400;
-            font-size: 12px;
+            font-size: 10px;
             line-height: 1.25;
             margin: 0;
             -webkit-font-smoothing: antialiased;
@@ -43,6 +43,7 @@
 
         .left-page {
             height: 100%;
+            width: 100%;
             justify-content: space-between;
             align-items: flex-start;
             display: flex;
@@ -130,6 +131,7 @@
     display: flex;
     flex-direction: column;
     gap: 10px;
+    width: 100%;
 }
 
         .menu-front {
@@ -156,6 +158,13 @@
   gap: 3px;
   font-weight: bold;
   text-transform: uppercase;
+  font-size: 11px;
+  width: 100%;
+justify-content: space-between;
+}
+
+.wine-block{
+    width: 100%;
 }
     </style>
     <div class="page-wrapper">
@@ -171,7 +180,7 @@
                             </div>
                             <div class="menu-list">
                                 {{#each wines}}
-                                <div class="prited-text-block">
+                                <div class="wine-block">
                                     <div class="wine-info">
                                         <div class="wine-producer">{{this.producer}} </div>
                                         <div class="vintage">{{this.vintage}}</div>
@@ -180,10 +189,6 @@
                                 </div>
                                 {{/each}}
                             </div>
-                        </div>
-                        <div class="qr-code-block">
-                            <div class="menu-print-text">Scan the qr code and read more about the menu</div><img
-                                loading="lazy" src="{{qrCodeURL}}" alt="" class="qrCode">
                         </div>
                     </div>
                     <div class="a5-page">
