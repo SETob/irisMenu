@@ -7,6 +7,7 @@ const { put } = require('@vercel/blob');
 module.exports = async (req, res) => {
     try {
         const recordID = req.body.recordID;
+        const date = req.body.date;
 
         console.log(`Generating PDF for recordID: ${recordID}`);
         // console.log("Received data:", JSON.stringify(req.body));
@@ -76,9 +77,9 @@ module.exports = async (req, res) => {
         console.log("PDF uploaded to Vercel Blob.");
 
 
-        const airtableEndpoint = `${process.env.AIRTABLE_API_URL}/${recordID}`;
-        const fileURL = data.content.download_url;
-        const filename = `wineMenu_${Date.now()}.pdf`;
+        const airtableEndpoint = `https://api.airtable.com/v0/app9qiUBEDVJBPxhc/tblNsaowMSGvd26ZS/${recordID}`;
+        const fileURL = blob.url;
+        const filename = `wineMenu_${date}.pdf`;
 
         const patchData = {
             fields: {
