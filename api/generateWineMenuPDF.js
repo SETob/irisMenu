@@ -14,7 +14,7 @@ module.exports = async (req, res) => {
 
 
         const templatePath = require('path');
-        const htmlPath = templatePath.resolve(__dirname, '..', 'templates', 'wineMenuTemplate-v2.html');
+        const htmlPath = templatePath.resolve(__dirname, '..', 'templates', 'wineMenuTemplate-v3.html');
         const html = fs.readFileSync(htmlPath, 'utf8');
         const template = Handlebars.compile(html);
         const processedHTML = template(req.body || {});
