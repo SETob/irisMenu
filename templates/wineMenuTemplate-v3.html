@@ -174,8 +174,7 @@ justify-content: space-between;
 }
 
 .wine-producer {
-    max-width: 50%;
-    padding-right: 1rem;
+    max-width: 40%;
 }
 
 .wine-block{
@@ -188,11 +187,11 @@ justify-content: space-between;
                 <div id="printableAreaFront" class="printablearea_front">
                     <div class="a5-page">
                         <div class="left-page">
-                            <div class="mid-line"></div>
                             <div class="printed-header_wrapper">
                                 <div class="printed-text_heading">WINE PAIRING</div>
                                 <div class="printer-header_underline"></div>
                                 <div class="text-size-tiny">{{date}}</div>
+                                <div class="text-size-tiny">{{table}}</div>
                             </div>
                             <div class="menu-list">
                                 {{#each wines}}
@@ -206,29 +205,30 @@ justify-content: space-between;
                                 {{/each}}
                             </div>
                         </div>
-                    </div>
+                    </div> <!-- a5 page-->
                     <div class="a5-page">
                         <div class="left-page">
                             <div class="printed-header_wrapper">
-                                <div class="printed-text_heading">Winemenu</div>
+                                <div class="printed-text_heading">WINE PAIRING</div>
                                 <div class="printer-header_underline"></div>
-                                <div class="text-size-tiny">{{journeyDate}}</div>
+                                <div class="text-size-tiny">{{date}}</div>
+                                <div class="text-size-tiny">{{table}}</div>
                             </div>
-                            <div role="list" class="printed-text-block">
-                                {{#each impressions}}
-                                <div role="listitem" class="menu-list">
-                                    <div id="dish-output-18" class="printed-text_impression">{{this.impressionName}}
+                            <div class="menu-list">
+                                {{#each wines}}
+                                <div class="wine-block">
+                                    <div class="wine-info">
+                                        <div class="wine-producer">{{this.producer}} </div>
+                                        <div class="vintage">{{this.vintage}}</div>
                                     </div>
+                                    <div class="name">{{this.wineName}}</div>
                                 </div>
                                 {{/each}}
                             </div>
                         </div>
-                        <div class="qr-code-block">
-                            <div class="menu-print-text">Scan the qr code and read more about the menu</div><img
-                                loading="lazy" src="{{qrCodeURL}}" alt="" class="qrCode">
-                        </div>
-                    </div>
-
+                    </div> <!-- a5 page-->
+                    
+                </div>
             </section>
             <section id="printableArea" class="section_printablearea">
                 <div id="printableAreaFront" class="printablearea_front">
