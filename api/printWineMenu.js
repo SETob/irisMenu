@@ -14,7 +14,7 @@ module.exports = async (req, res) => {
 
 
         const templatePath = require('path');
-        const htmlPath = templatePath.resolve(__dirname, '..', 'templates', 'wineMenuTemplate-v3.html');
+        const htmlPath = templatePath.resolve(__dirname, '..', 'templates', 'printWineMenuTemplate.html');
         const html = fs.readFileSync(htmlPath, 'utf8');
         const template = Handlebars.compile(html);
         const processedHTML = template(req.body || {});
@@ -23,36 +23,6 @@ module.exports = async (req, res) => {
             browserWSEndpoint: `wss://chrome.browserless.io?token=${process.env.BROWSERLESS_TOKEN}`
         });
 
-        // const page = await browser.newPage();
-        // await page.setContent(processedHTML);
-
-        // const pdfPath = `/tmp/${recordID}.pdf`;
-        // await page.pdf({
-        //     path: pdfPath,
-        //     format: 'A4',
-        //     landscape: true,
-        //     margin: { top: 0, right: 0, bottom: 0, left: 0 }
-        // });
-        // await browser.close();
-
-        // const pdf = fs.readFileSync(pdfPath);
-        // console.log("PDF generated and read into memory.");
-
-        // const owner = process.env.GITHUB_USERNAME;
-        // const repo = process.env.GITHUB_REPO;
-        // const path = `PDFs/${recordID}.pdf`;
-
-        // const { data } = await octokit.rest.repos.createOrUpdateFileContents({
-        //     owner,
-        //     repo,
-        //     path,
-        //     message: 'PDF added',
-        //     content: pdf.toString('base64'),
-        // });
-
-        // console.log("GitHub Response:", JSON.stringify(data, null, 2));
-
-        // console.log("PDF uploaded to GitHub.");
 
         const page = await browser.newPage();
         await page.setContent(processedHTML);
