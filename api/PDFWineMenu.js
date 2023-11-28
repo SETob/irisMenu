@@ -8,6 +8,7 @@ module.exports = async (req, res) => {
     try {
         const recordID = req.body.recordID;
         const date = req.body.date;
+        const tableNum = req.body.tableNum;
 
         console.log(`Generating PDF for recordID: ${recordID}`);
         // console.log("Received data:", JSON.stringify(req.body));
@@ -48,11 +49,11 @@ module.exports = async (req, res) => {
 
         const airtableEndpoint = `https://api.airtable.com/v0/app9qiUBEDVJBPxhc/tblNsaowMSGvd26ZS/${recordID}`;
         const fileURL = blob.url;
-        const filename = `wineMenu_${date}.pdf`;
+        const filename = `wineMenu_${date}_table${tableNum}.pdf`;
 
         const patchData = {
             fields: {
-                'wineMenuFile': [
+                'Digital Wine Menu': [
                     {
                         "url": fileURL,
                         "filename": filename
