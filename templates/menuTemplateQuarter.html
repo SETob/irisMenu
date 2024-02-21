@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>Iris restaurant</title>
+  <meta content="width=device-width, initial-scale=1" name="viewport">
+</head>
+
+<body class="body-print">
+
+  <style>
+    @font-face {
+      font-family: 'PP Writer';
+      src: url('https://cdn.jsdelivr.net/gh/SETob/irisMenu/fonts/fonts_PPWriter-Regular.otf') format('opentype');
+      font-weight: 400;
+    }
+
+    @font-face {
+      font-family: 'PP Writer';
+      src: url('https://cdn.jsdelivr.net/gh/SETob/irisMenu/fonts/fonts_PPWriter-ThinText.otf') format('opentype');
+      font-weight: 100;
+    }
+
+    @font-face {
+      font-family: 'PP Writer';
+      src: url('https://cdn.jsdelivr.net/gh/SETob/irisMenu/fonts/fonts_PPWriter-Bold.otf') format('opentype');
+      font-weight: 700;
+    }
+
+    body {
+      background-color: #fff;
+      font-family: 'PP Writer', serif;
+      font-weight: 400;
+      font-size: 12px;
+      line-height: 1.25;
+      margin: 0;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    .left-page {
+      height: 100%;
+      justify-content: space-between;
+      align-items: flex-start;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+    .quarter-page {
+      height: 100%;
+      width: 50%;
+      justify-content: space-between;
+      align-items: flex-end;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      border: red 1px solid;
+      padding-right: 55px;
+    }
+
+    .printablearea_front {
+      width: 297mm;
+      height: 209mm;
+      color: #000;
+      flex-direction: row;
+      justify-content: flex-start;
+      align-items: flex-end;
+      display: flex;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .a5-page {
+      width: 50%;
+      height: 100%;
+      padding-bottom: 75px;
+      position: relative;
+      border: #000 1px solid;
+      display: flex;
+      flex-direction: row;
+    }
+
+
+    .printed-header_wrapper {
+      position: relative;
+      top: 125px;
+      display: flex;
+      flex-direction: column;
+      align-items: end;
+      /* Add this line to give a top margin of 75px */
+    }
+
+    .printer-header_underline {
+      width: 75%;
+      border-bottom: solid 1px #000;
+      background-color: #000;
+      margin-bottom: 6px;
+    }
+
+    .printed-text-block {
+      grid-column-gap: 1rem;
+      grid-row-gap: 1rem;
+      flex-direction: column;
+      align-items: flex-end;
+      display: flex;
+    }
+
+    .printed-text_impression {
+      text-transform: uppercase;
+      font-size: 10px;
+    }
+
+    .printed-text_heading {
+      text-transform: uppercase;
+      margin-bottom: 6px;
+      font-size: 24px;
+    }
+
+    .text-size-tiny {
+      font-size: 0.75rem;
+    }
+
+    .qr-code-block {
+      width: 60%;
+      grid-column-gap: 18px;
+      grid-row-gap: 18px;
+      flex-direction: column;
+      justify-content: flex-end;
+      align-items: center;
+      display: flex;
+    }
+
+    .menu-print-text {
+      text-align: center;
+      font-size: 10px;
+    }
+
+    .menu-front {
+      width: 50%;
+      height: 100%;
+    }
+
+    img {
+      max-width: 100%;
+      display: inline-block;
+      border: 0;
+      overflow: clip;
+      overflow-clip-margin: content-box;
+    }
+
+    .qrCode {
+      width: 120px !important;
+      height: 120px !important;
+    }
+  </style>
+  <div class="page-wrapper">
+    <main class="main-wrapper">
+      <section id="printableArea" class="section_printablearea">
+        <div id="printableAreaFront" class="printablearea_front">
+          <div class="a5-page">
+            <div class="quarter-page">
+              <div class="printed-header_wrapper">
+                <div class="printed-text_heading">MENU</div>
+                <div class="printer-header_underline"></div>
+                <div class="text-size-tiny">{{journeyDate}}</div>
+              </div>
+                <div role="list" class="printed-text-block">
+                  {{#each impressions}}
+                  <div role="listitem" class="menu-list">  
+                    <div id="dish-output-18" class="printed-text_impression">{{this.impressionName}}</div>
+                  </div>
+                  {{/each}}
+                </div>
+                <div class="qr-code-block">
+                  <div class="menu-print-text">Scan the qr code and read more about the menu</div><img loading="lazy" src="{{qrCodeURL}}" alt="" class="qrCode">
+                </div>
+            
+            </div>
+            <div class="quarter-page">
+              <div class="printed-header_wrapper">
+                <div class="printed-text_heading">MENU</div>
+                <div class="printer-header_underline"></div>
+                <div class="text-size-tiny">{{journeyDate}}</div>
+              </div>
+                <div role="list" class="printed-text-block">
+                  {{#each impressions}}
+                  <div role="listitem" class="menu-list">  
+                    <div id="dish-output-18" class="printed-text_impression">{{this.impressionName}}</div>
+                  </div>
+                  {{/each}}
+                </div>
+                <div class="qr-code-block">
+                  <div class="menu-print-text">Scan the qr code and read more about the menu</div><img loading="lazy" src="{{qrCodeURL}}" alt="" class="qrCode">
+                </div>
+            </div>
+            
+          </div>
+          <div class="a5-page">
+            <div class="quarter-page">
+              <div class="printed-header_wrapper">
+                <div class="printed-text_heading">MENU</div>
+                <div class="printer-header_underline"></div>
+                <div class="text-size-tiny">{{journeyDate}}</div>
+              </div>
+                <div role="list" class="printed-text-block">
+                  {{#each impressions}}
+                  <div role="listitem" class="menu-list">  
+                    <div id="dish-output-18" class="printed-text_impression">{{this.impressionName}}</div>
+                  </div>
+                  {{/each}}
+                </div>
+                <div class="qr-code-block">
+                  <div class="menu-print-text">Scan the qr code and read more about the menu</div><img loading="lazy" src="{{qrCodeURL}}" alt="" class="qrCode">
+                </div>
+            </div>
+            <div class="quarter-page">
+              <div class="printed-header_wrapper">
+                <div class="printed-text_heading">MENU</div>
+                <div class="printer-header_underline"></div>
+                <div class="text-size-tiny">{{journeyDate}}</div>
+              </div>
+                <div role="list" class="printed-text-block">
+                  {{#each impressions}}
+                  <div role="listitem" class="menu-list">  
+                    <div id="dish-output-18" class="printed-text_impression">{{this.impressionName}}</div>
+                  </div>
+                  {{/each}}
+                </div>
+                <div class="qr-code-block">
+                  <div class="menu-print-text">Scan the qr code and read more about the menu</div><img loading="lazy" src="{{qrCodeURL}}" alt="" class="qrCode">
+                </div>
+            </div>
+            
+          </div>
+          
+    </main>
+</body>
+
+</html>
