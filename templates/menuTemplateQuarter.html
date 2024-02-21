@@ -125,16 +125,16 @@
 
     .qr-code-block {
       width: 60%;
-      grid-column-gap: 18px;
-      grid-row-gap: 18px;
+      grid-column-gap: 12px;
+      grid-row-gap: 12px;
       flex-direction: column;
       justify-content: flex-end;
-      align-items: center;
+      align-items: flex-end;
       display: flex;
     }
 
     .menu-print-text {
-      text-align: center;
+      text-align: right;
       font-size: 10px;
     }
 
@@ -152,8 +152,8 @@
     }
 
     .qrCode {
-      width: 120px !important;
-      height: 120px !important;
+      width: 100px !important;
+      height: 100px !important;
     }
   </style>
   <div class="page-wrapper">
@@ -175,7 +175,8 @@
                   {{/each}}
                 </div>
                 <div class="qr-code-block">
-                  <div class="menu-print-text">Scan the qr code and read more about the menu</div><img loading="lazy" src="{{qrCodeURL}}" alt="" class="qrCode">
+                  <img loading="lazy" src="{{qrCodeURL}}" alt="" class="qrCode">
+                  <div class="menu-print-text">Scan the qr code and read more about the menu</div>
                 </div>
             
             </div>
@@ -193,7 +194,8 @@
                   {{/each}}
                 </div>
                 <div class="qr-code-block">
-                  <div class="menu-print-text">Scan the qr code and read more about the menu</div><img loading="lazy" src="{{qrCodeURL}}" alt="" class="qrCode">
+                  <img loading="lazy" src="{{qrCodeURL}}" alt="" class="qrCode">
+                  <div class="menu-print-text">Scan the qr code and read more about the menu</div>
                 </div>
             </div>
             
@@ -213,8 +215,8 @@
                   {{/each}}
                 </div>
                 <div class="qr-code-block">
-                  <div class="menu-print-text">Scan the qr code and read more about the menu</div><img loading="lazy" src="{{qrCodeURL}}" alt="" class="qrCode">
-                </div>
+                  <img loading="lazy" src="{{qrCodeURL}}" alt="" class="qrCode">
+                  <div class="menu-print-text">Scan the qr code and read more about the menu</div>                </div>
             </div>
             <div class="quarter-page">
               <div class="printed-header_wrapper">
@@ -230,8 +232,9 @@
                   {{/each}}
                 </div>
                 <div class="qr-code-block">
-                  <div class="menu-print-text">Scan the qr code and read more about the menu</div><img loading="lazy" src="{{qrCodeURL}}" alt="" class="qrCode">
-                </div>
+                  <img loading="lazy" src="{{qrCodeURL}}" alt="" class="qrCode">
+                  <div class="menu-print-text">Scan the qr code and read more about the menu</div>
+                                </div>
             </div>
             
           </div>
