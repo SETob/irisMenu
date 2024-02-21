@@ -15,7 +15,7 @@ module.exports = async (req, res) => {
 
 
         const templatePath = require('path');
-        const htmlPath = templatePath.resolve(__dirname, '..', 'templates', 'menuTemplate.html');
+        const htmlPath = templatePath.resolve(__dirname, '..', 'templates', 'menuTemplateQuarter.html');
         const html = fs.readFileSync(htmlPath, 'utf8');
         const template = Handlebars.compile(html);
 
