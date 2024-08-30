@@ -47,30 +47,38 @@ module.exports = async (req, res) => {
 
         const pdfName = `PDFs/${recordID}.pdf`;
 
-        // Upload the buffer to Vercel Blob and patch Airtable concurrently
-        const [blob, airtableResponse] = await Promise.all([
-            put(pdfName, pdfBuffer, {
-                access: 'public',
-                token: process.env.BLOB_READ_WRITE_TOKEN
-            }),
-            axios.patch(
-                `https://api.airtable.com/v0/app9qiUBEDVJBPxhc/tblNsaowMSGvd26ZS/${recordID}`,
-                {
-                    fields: {
-                        'wineMenuFile': [{
-                            "url": blob.url,
-                            "filename": `wineMenu_${date}.pdf`
-                        }]
+        // Upload the buffer to Vercel Blob
+        const blobPromise = put(pdfName, pdfBuffer, {
+            access: 'public',
+            token: process.env.BLOB_READ_WRITE_TOKEN
+        });
+
+        // Patch Airtable record with blob URL after blobPromise is resolved
+        const blob = await blobPromise;
+
+        const airtableEndpoint = `https://api.airtable.com/v0/app9qiUBEDVJBPxhc/tblNsaowMSGvd26ZS/${recordID}`;
+        const fileURL = blob.url;
+        const filename = `wineMenu_${date}.pdf`;
+
+        const patchData = {
+            fields: {
+                'wineMenuFile': [
+                    {
+                        "url": fileURL,
+                        "filename": filename
                     }
-                },
-                {
-                    headers: {
-                        'Authorization': `Bearer ${process.env.AIRTABLE_API_KEY}`,
-                        'Content-Type': 'application/json',
-                    }
-                }
-            )
-        ]);
+                ]
+            }
+        };
+
+        console.log("Sending to AT:", JSON.stringify(patchData, null, 2));
+
+        const airtableResponse = await axios.patch(airtableEndpoint, patchData, {
+            headers: {
+                'Authorization': `Bearer ${process.env.AIRTABLE_API_KEY}`,
+                'Content-Type': 'application/json',
+            }
+        });
 
         if (airtableResponse.status === 200) {
             console.log("PDF uploaded to Airtable.");
@@ -84,4 +92,4 @@ module.exports = async (req, res) => {
         console.error('Error Stack:', error.stack);
         res.status(500).send('Server Error');
     }
-}
+};
