@@ -35,6 +35,12 @@ module.exports = async (req, res) => {
 
         await page.setContent(processedHTML);
 
+        // Wait for all images to load
+        await page.evaluate(async () => {
+            const selectors = Array.from(document.images).map(img => img.complete ? null : new Promise(resolve => img.onload = resolve));
+            await Promise.all(selectors);
+        });
+
         // Generate the PDF as a buffer
         const pdfBuffer = await page.pdf({
             format: 'A4',
