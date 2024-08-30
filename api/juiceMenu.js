@@ -6,12 +6,8 @@ const { put } = require('@vercel/blob');
 
 module.exports = async (req, res) => {
     try {
-        const recordID = req.body.recordID;
-        const date = req.body.date;
-
+        const { recordID, date } = req.body;
         console.log(`Generating PDF for recordID: ${recordID}`);
-        // console.log("Received data:", JSON.stringify(req.body));
-
 
         const templatePath = require('path');
         const htmlPath = templatePath.resolve(__dirname, '..', 'templates', 'juiceMenuTemplate.html');
@@ -25,27 +21,45 @@ module.exports = async (req, res) => {
 
 
         const page = await browser.newPage();
+
+        await page.setRequestInterception(true);
+        page.on('request', (request) => {
+            const blockResources = ['stylesheet', 'font', 'script'];
+            if (blockResources.includes(request.resourceType())) {
+                request.abort();
+            } else {
+                request.continue();
+            }
+        });
+
         await page.setContent(processedHTML);
-        
+
+        // Wait for all images to load
+        await page.evaluate(async () => {
+            const selectors = Array.from(document.images).map(img => img.complete ? null : new Promise(resolve => img.onload = resolve));
+            await Promise.all(selectors);
+        });
+
         // Generate the PDF as a buffer
         const pdfBuffer = await page.pdf({
             format: 'A4',
             landscape: true,
             margin: { top: 0, right: 0, bottom: 0, left: 0 }
         });
-        
+
         await browser.close();
         console.log("PDF generated and stored in memory.");
-        
+
         // Upload the buffer to Vercel Blob
         const pdfName = `PDFs/${recordID}.pdf`;
-        const blob = await put(pdfName, pdfBuffer, {
+        const blobPromise = await put(pdfName, pdfBuffer, {
             access: 'public',
             token: process.env.BLOB_READ_WRITE_TOKEN
         });
-        
+
         console.log("PDF uploaded to Vercel Blob.");
 
+        const blob = await blobPromise;
 
         const airtableEndpoint = `https://api.airtable.com/v0/app9qiUBEDVJBPxhc/tblNsaowMSGvd26ZS/${recordID}`;
         const fileURL = blob.url;
