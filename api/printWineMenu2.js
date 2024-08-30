@@ -1,0 +1,87 @@
+const axios = require('axios');
+const fs = require('fs');
+const puppeteer = require('puppeteer-core');
+const Handlebars = require('handlebars');
+const { put } = require('@vercel/blob');
+
+module.exports = async (req, res) => {
+    try {
+        const { recordID, date } = req.body;
+
+        console.log(`Generating PDF for recordID: ${recordID}`);
+
+        const templatePath = require('path');
+        const htmlPath = templatePath.resolve(__dirname, '..', 'templates', 'printWineMenuTemplateQuarter.html');
+        const html = fs.readFileSync(htmlPath, 'utf8');
+        const template = Handlebars.compile(html);
+        const processedHTML = template(req.body || {});
+
+        const browser = await puppeteer.connect({
+            browserWSEndpoint: `wss://chrome.browserless.io?token=${process.env.BROWSERLESS_TOKEN}`
+        });
+
+        const page = await browser.newPage();
+
+        // Block unnecessary resources
+        await page.setRequestInterception(true);
+        page.on('request', (request) => {
+            const blockResources = ['image', 'stylesheet', 'font', 'script'];
+            if (blockResources.includes(request.resourceType())) {
+                request.abort();
+            } else {
+                request.continue();
+            }
+        });
+
+        await page.setContent(processedHTML);
+
+        // Generate the PDF as a buffer
+        const pdfBuffer = await page.pdf({
+            format: 'A4',
+            landscape: true,
+            margin: { top: 0, right: 0, bottom: 0, left: 0 }
+        });
+
+        await browser.close();
+        console.log("PDF generated and stored in memory.");
+
+        const pdfName = `PDFs/${recordID}.pdf`;
+
+        // Upload the buffer to Vercel Blob and patch Airtable concurrently
+        const [blob, airtableResponse] = await Promise.all([
+            put(pdfName, pdfBuffer, {
+                access: 'public',
+                token: process.env.BLOB_READ_WRITE_TOKEN
+            }),
+            axios.patch(
+                `https://api.airtable.com/v0/app9qiUBEDVJBPxhc/tblNsaowMSGvd26ZS/${recordID}`,
+                {
+                    fields: {
+                        'wineMenuFile': [{
+                            "url": blob.url,
+                            "filename": `wineMenu_${date}.pdf`
+                        }]
+                    }
+                },
+                {
+                    headers: {
+                        'Authorization': `Bearer ${process.env.AIRTABLE_API_KEY}`,
+                        'Content-Type': 'application/json',
+                    }
+                }
+            )
+        ]);
+
+        if (airtableResponse.status === 200) {
+            console.log("PDF uploaded to Airtable.");
+            res.status(200).send('PDF uploaded to Airtable');
+        } else {
+            console.error("Failed to upload PDF to Airtable.");
+            res.status(400).send('Failed to upload PDF to Airtable');
+        }
+    } catch (error) {
+        console.error('Error Message:', error.message);
+        console.error('Error Stack:', error.stack);
+        res.status(500).send('Server Error');
+    }
+}
