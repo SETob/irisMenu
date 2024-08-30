@@ -25,7 +25,7 @@ module.exports = async (req, res) => {
         // Block unnecessary resources
         await page.setRequestInterception(true);
         page.on('request', (request) => {
-            const blockResources = ['image', 'stylesheet', 'font', 'script'];
+            const blockResources = ['stylesheet', 'font', 'script'];
             if (blockResources.includes(request.resourceType())) {
                 request.abort();
             } else {
